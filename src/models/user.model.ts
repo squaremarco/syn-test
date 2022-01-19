@@ -16,7 +16,7 @@ export type UserInput = {
   password: UserDocument['password'];
 };
 
-const usersSchema = new Schema(
+const usersSchema = new Schema<UserDocument>(
   {
     firstName: {
       type: Schema.Types.String,

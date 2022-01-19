@@ -16,7 +16,7 @@ export type ReviewInput = {
   price?: ReviewDocument['price'];
 };
 
-const reviewsSchema = new Schema(
+const reviewsSchema = new Schema<ReviewDocument>(
   {
     userId: {
       type: Schema.Types.String,

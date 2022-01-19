@@ -5,13 +5,13 @@ import { Review } from '../models/review.model';
 import { User } from '../models/user.model';
 
 export const createRestaurant = async (req: Request, res: Response) => {
-  const { name, paymentTypes, pictures, tags } = req.body;
+  const { name, paymentTypes, pictures, menuGroups, tags } = req.body;
 
   if (!name || !paymentTypes || !tags) {
     return res.status(422).json({ message: 'The fields name, paymentTypes and tags are required' });
   }
 
-  const data = await Restaurant.create<RestaurantInput>({ name, paymentTypes, pictures, tags });
+  const data = await Restaurant.create<RestaurantInput>({ name, paymentTypes, pictures, menuGroups, tags });
 
   return res.status(201).json({ data });
 };
