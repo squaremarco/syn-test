@@ -42,7 +42,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "61e7e105a9b192e00d113eb4"
+									"value": "61e7ececdf506e5f8333db50"
 								}
 							]
 						}
@@ -56,7 +56,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"firstName\": \"Pippo\",\n    \"lastName\": \"Cane\",\n    \"email\": \"pippo.cane@test.dev\",\n    \"password\": \"1234\"\n}",
+							"raw": "{\n    \"firstName\": \"Topolino\",\n    \"lastName\": \"Ratto\",\n    \"email\": \"topolino.ratto@test.dev\",\n    \"password\": \"5678\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -90,12 +90,172 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/users",
+							"raw": "{{baseUrl}}/users/:id",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"users"
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61e7e105a9b192e00d113eb4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Review",
+			"item": [
+				{
+					"name": "All Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reviews",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Review",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reviews/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reviews",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61e7ececdf506e5f8333db50"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Reviews",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"61e7ececdf506e5f8333db50\",\n    \"placeId\": \"asdasd\",\n    \"content\": \"Lorem ipsum dolor sit amet.\",\n    \"score\": \"10\",\n    \"price\": \"40\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/reviews",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Review",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Pippo\",\n    \"lastName\": \"Cane\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/reviews/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reviews",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61e7e105a9b192e00d113eb4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Review",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reviews/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reviews",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61e7f880ec27a9506beb69f3"
+								}
 							]
 						}
 					},
