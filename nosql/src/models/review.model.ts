@@ -2,7 +2,7 @@ import mongoose, { Document, Model, Schema } from 'mongoose';
 
 export type ReviewDocument = Document & {
   userId: string;
-  placeId: string;
+  restaurantId: string;
   content: string;
   score: number;
   price?: number;
@@ -10,7 +10,7 @@ export type ReviewDocument = Document & {
 
 export type ReviewInput = {
   userId: ReviewDocument['userId'];
-  placeId: ReviewDocument['placeId'];
+  restaurantId: ReviewDocument['restaurantId'];
   content: ReviewDocument['content'];
   score: ReviewDocument['score'];
   price?: ReviewDocument['price'];
@@ -22,7 +22,7 @@ const reviewsSchema = new Schema(
       type: Schema.Types.String,
       required: true
     },
-    placeId: {
+    restaurantId: {
       type: Schema.Types.String,
       required: true
     },

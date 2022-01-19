@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 
+import { Restaurant } from '../models/restaurant.model';
 import { Review } from '../models/review.model';
 import { User, UserInput } from '../models/user.model';
+import { calculateScoreAndPrice } from '../utils';
 
 export const createUser = async (req: Request, res: Response) => {
   const { email, firstName, lastName, password } = req.body;
@@ -64,12 +66,12 @@ export const deleteUser = async (req: Request, res: Response) => {
 
   await User.findByIdAndDelete(id);
 
-  const reviewIds = (await Review.find({ userId: id })).map(r => r.id as string);
+  const reviewsByUser = (await Review.find({ userId: id })).map(r => r.id as string);
+  const restaurantByReviews = (await Restaurant.find({ reviews: { $in: reviewsByUser } })).map(r => r.id as string);
 
   await Review.deleteMany({ userId: id });
-
-  // TODO pullAll reviews ids from place
-  // TODO recalculate score and average price of place
+  await Restaurant.updateMany({ reviews: { $in: reviewsByUser } }, { $pullAll: { reviews: reviewsByUser } });
+  await Promise.all(restaurantByReviews.map(calculateScoreAndPrice));
 
   return res.status(200).json({ message: 'User deleted successfully.' });
 };
