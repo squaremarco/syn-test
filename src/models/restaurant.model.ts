@@ -6,12 +6,12 @@ export type PaymentType = typeof paymentTypes[number];
 
 export type RestaurantDocument = Document & {
   name: string;
-  averageScore: number | null;
-  averagePrice: number | null;
+  averageScore: number;
+  averagePrice: number;
   paymentTypes: PaymentType[];
   pictures: string[];
   tags: string[];
-  pinnedReview: string;
+  pinnedReview: string | null;
   reviews: string[];
 };
 
@@ -31,11 +31,13 @@ const restaurantSchema = new Schema(
     averageScore: {
       type: Schema.Types.Number,
       min: 0,
-      max: 10
+      max: 10,
+      default: 0
     },
     averagePrice: {
       type: Schema.Types.Number,
-      min: 0
+      min: 0,
+      default: 0
     },
     paymentTypes: {
       type: [Schema.Types.String],
@@ -51,7 +53,8 @@ const restaurantSchema = new Schema(
       required: true
     },
     pinnedReview: {
-      type: Schema.Types.String
+      type: Schema.Types.String,
+      default: null
     },
     reviews: {
       type: [Schema.Types.String],

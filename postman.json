@@ -125,7 +125,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": ""
+									"value": "61e7e105a9b192e00d113eb4"
 								}
 							]
 						}
@@ -185,7 +185,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"userId\": \"61e7ececdf506e5f8333db50\",\n    \"placeId\": \"asdasd\",\n    \"content\": \"Lorem ipsum dolor sit amet.\",\n    \"score\": \"10\",\n    \"price\": \"40\"\n}",
+							"raw": "{\n    \"userId\": \"61e82fb57596125a3d8e86d3\",\n    \"restaurantId\": \"61e82fa87596125a3d8e86d1\",\n    \"content\": \"Lorem ipsum dolor sit amet.\",\n    \"score\": \"9\",\n    \"price\": \"50\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -238,6 +238,67 @@
 					"response": []
 				},
 				{
+					"name": "Pin Review",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"61e82fa87596125a3d8e86d1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/reviews/pin/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reviews",
+								"pin",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61e82fc77596125a3d8e86d9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unpin Review",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"61e82fa87596125a3d8e86d1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/reviews/unpin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reviews",
+								"unpin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Delete Review",
 					"request": {
 						"method": "DELETE",
@@ -254,7 +315,204 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "61e7f880ec27a9506beb69f3"
+									"value": "61e82a8e4728261873b7e044"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Restaurant",
+			"item": [
+				{
+					"name": "All Restaurants",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/restaurants",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Restaurant",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/restaurants/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurants",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61e7ececdf506e5f8333db50"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Restaurant",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Good Restaurant\",\n    \"paymentTypes\": [\n        \"card\"\n    ],\n    \"pictures\": [],\n    \"tags\": [\n        \"Italian\",\n        \"Modern\",\n        \"Affordable\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/restaurants",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Restaurant",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Good Restaurant\",\n    \"paymentTypes\": [\n        \"cash\",\n        \"voucher\"\n    ],\n    \"pictures\": [],\n    \"tags\": [\n        \"French\",\n        \"Old-Style\",\n        \"Pricey\"\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/restaurants/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurants",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61e81ee55c008117bbf545ab"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Like Restaurant",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"61e7e105a9b192e00d113eb4\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/restaurants/like/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurants",
+								"like",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61e8293c79c54bb18e3f073f"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Dislike Restaurant",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"61e7e105a9b192e00d113eb4\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/restaurants/dislike/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurants",
+								"dislike",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61e8293c79c54bb18e3f073f"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Restaurant",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/restaurants/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurants",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61e8293c79c54bb18e3f073f"
 								}
 							]
 						}

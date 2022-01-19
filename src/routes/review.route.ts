@@ -1,6 +1,14 @@
 import { Router } from 'express';
 
-import { createReview, deleteReview, getAllReviews, getReview, updateReview } from '../controllers/review.controller';
+import {
+  createReview,
+  deleteReview,
+  getAllReviews,
+  getReview,
+  pinReview,
+  unpinReview,
+  updateReview
+} from '../controllers/review.controller';
 
 export const reviewRoute = () => {
   const router = Router();
@@ -14,6 +22,10 @@ export const reviewRoute = () => {
   router.patch('/reviews/:id', updateReview);
 
   router.delete('/reviews/:id', deleteReview);
+
+  router.patch('/reviews/pin/:id', pinReview);
+
+  router.patch('/reviews/unpin', unpinReview);
 
   return router;
 };
