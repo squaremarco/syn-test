@@ -1,0 +1,10 @@
+node_modules
+.eslintrc.js
+.gitignore
+.eslintignore
+.lintstagedrc.json
+.nvmrc
+.prettierignore
+.prettierrc.js
+README.md
+mongo

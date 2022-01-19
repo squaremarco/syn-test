@@ -1,0 +1,11 @@
+{
+  "ext": "ts,json",
+  "ignore": ["build"],
+  "quiet": true,
+  "exec": "npm run dev:ts-node",
+  "events": {
+    "restart": "npm run kill-port",
+    "crash": "npm run kill-port"
+  },
+  "delay": 1000
+}
