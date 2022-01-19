@@ -1,3 +1,0 @@
-{
-  "*.{js,jsx,ts,tsx}": ["npm run prettier:lint-staged", "npm run eslint:lint-staged"]
-}
