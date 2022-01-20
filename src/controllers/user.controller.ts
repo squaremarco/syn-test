@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { Restaurant } from '../models/restaurant.model';
 import { Review } from '../models/review.model';
 import { User, UserInput } from '../models/user.model';
-import { calculateScoreAndPrice } from '../utils';
+import { setRestaurantAverageScoreAndPrice } from '../utils';
 
 export const createUser = async (req: Request, res: Response) => {
   const { email, firstName, lastName, password } = req.body;
@@ -71,7 +71,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 
   await Review.deleteMany({ userId: id });
   await Restaurant.updateMany({ reviews: { $in: reviewsByUser } }, { $pullAll: { reviews: reviewsByUser } });
-  await Promise.all(restaurantByReviews.map(calculateScoreAndPrice));
+  await Promise.all(restaurantByReviews.map(setRestaurantAverageScoreAndPrice));
 
   return res.send({ message: 'User deleted successfully.' });
 };

@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { Restaurant } from '../models/restaurant.model';
 import { Review, ReviewInput } from '../models/review.model';
 import { User } from '../models/user.model';
-import { calculateScoreAndPrice } from '../utils';
+import { setRestaurantAverageScoreAndPrice } from '../utils';
 
 export const createReview = async (req: Request, res: Response) => {
   const { userId, restaurantId, content, score, price } = req.body;
@@ -32,7 +32,7 @@ export const createReview = async (req: Request, res: Response) => {
   await User.findByIdAndUpdate(userId, { $push: { reviews: data.id } });
   await Restaurant.findByIdAndUpdate(restaurantId, { $push: { reviews: data.id } });
 
-  await calculateScoreAndPrice(restaurantId);
+  await setRestaurantAverageScoreAndPrice(restaurantId);
 
   return res.send({ data });
 };
@@ -70,7 +70,7 @@ export const updateReview = async (req: Request, res: Response) => {
   }
 
   await Review.findByIdAndUpdate(id, { content, score, price: price ?? review.price });
-  await calculateScoreAndPrice(review.restaurantId);
+  await setRestaurantAverageScoreAndPrice(review.restaurantId);
 
   const data = await Review.findById(id);
 
@@ -89,7 +89,7 @@ export const deleteReview = async (req: Request, res: Response) => {
   await Review.findByIdAndDelete(id);
   await User.findByIdAndUpdate(review.userId, { $pull: { reviews: id } });
   await Restaurant.findByIdAndUpdate(review.restaurantId, { $pull: { reviews: id } });
-  await calculateScoreAndPrice(review.restaurantId);
+  await setRestaurantAverageScoreAndPrice(review.restaurantId);
 
   return res.send({ message: 'Review deleted successfully.' });
 };

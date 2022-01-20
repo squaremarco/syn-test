@@ -1,7 +1,7 @@
 import { Restaurant } from '../models/restaurant.model';
 import { Review } from '../models/review.model';
 
-export const calculateScoreAndPrice = async (id: string) => {
+export const setRestaurantAverageScoreAndPrice = async (id: string) => {
   const reviewsByRestaurant = await Review.find({ restaurantId: id });
 
   const { totalScore, countScore, totalPrice, countPrice } = reviewsByRestaurant.reduce(
