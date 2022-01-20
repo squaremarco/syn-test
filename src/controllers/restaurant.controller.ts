@@ -8,18 +8,18 @@ export const createRestaurant = async (req: Request, res: Response) => {
   const { name, paymentTypes, pictures, menuGroups, tags } = req.body;
 
   if (!name || !paymentTypes || !tags) {
-    return res.status(422).json({ message: 'The fields name, paymentTypes and tags are required' });
+    return res.status(422).send({ message: 'The fields name, paymentTypes and tags are required' });
   }
 
   const data = await Restaurant.create<RestaurantInput>({ name, paymentTypes, pictures, menuGroups, tags });
 
-  return res.status(201).json({ data });
+  return res.send({ data });
 };
 
 export const getAllRestaurants = async (_: Request, res: Response) => {
   const data = await Restaurant.find().sort('-updatedAt').exec();
 
-  return res.status(200).json({ data });
+  return res.send({ data });
 };
 
 export const getRestaurant = async (req: Request, res: Response) => {
@@ -28,10 +28,10 @@ export const getRestaurant = async (req: Request, res: Response) => {
   const data = await Restaurant.findById(id);
 
   if (!data) {
-    return res.status(404).json({ message: `Place with id "${id}" not found.` });
+    return res.status(404).send({ message: `Place with id "${id}" not found.` });
   }
 
-  return res.status(200).json({ data });
+  return res.send({ data });
 };
 
 export const updateRestaurant = async (req: Request, res: Response) => {
@@ -41,18 +41,18 @@ export const updateRestaurant = async (req: Request, res: Response) => {
   const restaurant = await Restaurant.findById(id);
 
   if (!restaurant) {
-    return res.status(404).json({ message: `Restaurant with id "${id}" not found.` });
+    return res.status(404).send({ message: `Restaurant with id "${id}" not found.` });
   }
 
   if (!name || !paymentTypes || !tags) {
-    return res.status(422).json({ message: 'The fields name, paymentTypes and tags are required' });
+    return res.status(422).send({ message: 'The fields name, paymentTypes and tags are required' });
   }
 
   await Restaurant.findByIdAndUpdate(id, { name, paymentTypes, pictures: pictures ?? restaurant.pictures, tags });
 
   const data = await Restaurant.findById(id);
 
-  return res.status(200).json({ data });
+  return res.send({ data });
 };
 
 export const deleteRestaurant = async (req: Request, res: Response) => {
@@ -61,7 +61,7 @@ export const deleteRestaurant = async (req: Request, res: Response) => {
   const restaurant = await Restaurant.findById(id);
 
   if (!restaurant) {
-    return res.status(404).json({ message: `Place with id "${id}" not found.` });
+    return res.status(404).send({ message: `Place with id "${id}" not found.` });
   }
 
   await Restaurant.findByIdAndDelete(id);
@@ -72,7 +72,7 @@ export const deleteRestaurant = async (req: Request, res: Response) => {
   await User.updateMany({ reviews: { $in: reviewsByRestaurant } }, { $pullAll: { reviews: reviewsByRestaurant } });
   await User.updateMany({ likes: id }, { $pull: { likes: id } });
 
-  return res.status(200).json({ message: 'Restaurant deleted successfully.' });
+  return res.send({ message: 'Restaurant deleted successfully.' });
 };
 
 export const likeRestaurant = async (req: Request, res: Response) => {
@@ -83,18 +83,18 @@ export const likeRestaurant = async (req: Request, res: Response) => {
   const user = await User.findById(userId);
 
   if (!restaurant || !user) {
-    return res.status(404).json({ message: `Restaurant with id "${id}" or User with id "${userId}" not found.` });
+    return res.status(404).send({ message: `Restaurant with id "${id}" or User with id "${userId}" not found.` });
   }
 
   const userAlreadyLikes = await User.findOne({ _id: userId, likes: { $in: id } });
 
   if (userAlreadyLikes) {
-    return res.status(422).json({ message: `User with id "${userId}" already likes Restaurant with id "${id}".` });
+    return res.status(422).send({ message: `User with id "${userId}" already likes Restaurant with id "${id}".` });
   }
 
   await User.findByIdAndUpdate(userId, { $push: { likes: id } });
 
-  return res.status(200).json({ message: 'Restaurant liked successfully.' });
+  return res.send({ message: 'Restaurant liked successfully.' });
 };
 
 export const dislikeRestaurant = async (req: Request, res: Response) => {
@@ -105,16 +105,16 @@ export const dislikeRestaurant = async (req: Request, res: Response) => {
   const user = await User.findById(userId);
 
   if (!restaurant || !user) {
-    return res.status(404).json({ message: `Restaurant with id "${id}" or User with id "${userId}" not found.` });
+    return res.status(404).send({ message: `Restaurant with id "${id}" or User with id "${userId}" not found.` });
   }
 
   const userDoesntLike = await User.findOne({ id: userId, likes: { $in: id } });
 
   if (!userDoesntLike) {
-    return res.status(422).json({ message: `User with id "${userId}" doesn't like Restaurant with id "${id}".` });
+    return res.status(422).send({ message: `User with id "${userId}" doesn't like Restaurant with id "${id}".` });
   }
 
   await User.findByIdAndUpdate(userId, { $pull: { likes: id } });
 
-  return res.status(200).json({ message: 'Restaurant disliked successfully.' });
+  return res.send({ message: 'Restaurant disliked successfully.' });
 };

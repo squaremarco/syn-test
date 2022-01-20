@@ -9,7 +9,7 @@ export const createReview = async (req: Request, res: Response) => {
   const { userId, restaurantId, content, score, price } = req.body;
 
   if (!userId || !restaurantId || !content || !score) {
-    return res.status(422).json({ message: 'The fields userId, restaurantId, content and score are required' });
+    return res.status(422).send({ message: 'The fields userId, restaurantId, content and score are required' });
   }
 
   const user = await User.findById(userId);
@@ -18,13 +18,13 @@ export const createReview = async (req: Request, res: Response) => {
   if (!user || !restaurant) {
     return res
       .status(404)
-      .json({ message: `User with id "${userId}" or Restaurant with id "${restaurantId}" not found.` });
+      .send({ message: `User with id "${userId}" or Restaurant with id "${restaurantId}" not found.` });
   }
 
   const review = await Review.findOne({ userId, restaurantId });
 
   if (review) {
-    return res.status(422).json({ message: `Can't review a restaurant more than once. Update your review instead.` });
+    return res.status(422).send({ message: `Can't review a restaurant more than once. Update your review instead.` });
   }
 
   const data = await Review.create<ReviewInput>({ content, score, price, userId, restaurantId });
@@ -34,13 +34,13 @@ export const createReview = async (req: Request, res: Response) => {
 
   await calculateScoreAndPrice(restaurantId);
 
-  return res.status(201).json({ data });
+  return res.send({ data });
 };
 
 export const getAllReviews = async (_: Request, res: Response) => {
   const data = await Review.find().sort('-updatedAt').exec();
 
-  return res.status(200).json({ data });
+  return res.send({ data });
 };
 
 export const getReview = async (req: Request, res: Response) => {
@@ -49,10 +49,10 @@ export const getReview = async (req: Request, res: Response) => {
   const data = await Review.findById(id);
 
   if (!data) {
-    return res.status(404).json({ message: `Review with id "${id}" not found.` });
+    return res.status(404).send({ message: `Review with id "${id}" not found.` });
   }
 
-  return res.status(200).json({ data });
+  return res.send({ data });
 };
 
 export const updateReview = async (req: Request, res: Response) => {
@@ -62,11 +62,11 @@ export const updateReview = async (req: Request, res: Response) => {
   const review = await Review.findById(id);
 
   if (!review) {
-    return res.status(404).json({ message: `Review with id "${id}" not found.` });
+    return res.status(404).send({ message: `Review with id "${id}" not found.` });
   }
 
   if (!content || !score) {
-    return res.status(422).json({ message: 'The fields content and score are required' });
+    return res.status(422).send({ message: 'The fields content and score are required' });
   }
 
   await Review.findByIdAndUpdate(id, { content, score, price: price ?? review.price });
@@ -74,7 +74,7 @@ export const updateReview = async (req: Request, res: Response) => {
 
   const data = await Review.findById(id);
 
-  return res.status(200).json({ data });
+  return res.send({ data });
 };
 
 export const deleteReview = async (req: Request, res: Response) => {
@@ -83,7 +83,7 @@ export const deleteReview = async (req: Request, res: Response) => {
   const review = await Review.findById(id);
 
   if (!review) {
-    return res.status(404).json({ message: `Review with id "${id}" not found.` });
+    return res.status(404).send({ message: `Review with id "${id}" not found.` });
   }
 
   await Review.findByIdAndDelete(id);
@@ -91,7 +91,7 @@ export const deleteReview = async (req: Request, res: Response) => {
   await Restaurant.findByIdAndUpdate(review.restaurantId, { $pull: { reviews: id } });
   await calculateScoreAndPrice(review.restaurantId);
 
-  return res.status(200).json({ message: 'Review deleted successfully.' });
+  return res.send({ message: 'Review deleted successfully.' });
 };
 
 export const pinReview = async (req: Request, res: Response) => {
@@ -104,12 +104,12 @@ export const pinReview = async (req: Request, res: Response) => {
   if (!restaurant || !review) {
     return res
       .status(404)
-      .json({ message: `Restaurant with id "${restaurantId}" or Review with id "${id}" not found.` });
+      .send({ message: `Restaurant with id "${restaurantId}" or Review with id "${id}" not found.` });
   }
 
   await Restaurant.findByIdAndUpdate(restaurantId, { pinnedReview: id });
 
-  return res.status(200).json({ message: 'Review pinned successfully.' });
+  return res.send({ message: 'Review pinned successfully.' });
 };
 
 export const unpinReview = async (req: Request, res: Response) => {
@@ -118,10 +118,10 @@ export const unpinReview = async (req: Request, res: Response) => {
   const restaurant = await Restaurant.findById(restaurantId);
 
   if (!restaurant) {
-    return res.status(404).json({ message: `Restaurant with id "${restaurantId}" not found.` });
+    return res.status(404).send({ message: `Restaurant with id "${restaurantId}" not found.` });
   }
 
   await Restaurant.findByIdAndUpdate(restaurantId, { pinnedReview: null });
 
-  return res.status(200).json({ message: 'Review unpinned successfully.' });
+  return res.send({ message: 'Review unpinned successfully.' });
 };

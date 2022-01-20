@@ -10,22 +10,12 @@ import {
   updateReview
 } from '../controllers/review.controller';
 
-export const reviewRoute = () => {
-  const router = Router();
-
-  router.post('/reviews', createReview);
-
-  router.get('/reviews', getAllReviews);
-
-  router.get('/reviews/:id', getReview);
-
-  router.patch('/reviews/:id', updateReview);
-
-  router.delete('/reviews/:id', deleteReview);
-
-  router.patch('/reviews/pin/:id', pinReview);
-
-  router.patch('/reviews/unpin', unpinReview);
-
-  return router;
-};
+export const reviewRoute = () =>
+  Router()
+    .post('/reviews', createReview)
+    .get('/reviews', getAllReviews)
+    .get('/reviews/:id', getReview)
+    .patch('/reviews/:id', updateReview)
+    .delete('/reviews/:id', deleteReview)
+    .patch('/reviews/pin/:id', pinReview)
+    .patch('/reviews/unpin', unpinReview);
