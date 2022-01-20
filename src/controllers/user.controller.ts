@@ -2,13 +2,13 @@ import { Request, Response } from 'express';
 
 import { Restaurant } from '../models/restaurant.model';
 import { Review } from '../models/review.model';
-import { User } from '../models/user.model';
+import { CreateUserInputValidation, UpdateUserInputValidation, User } from '../models/user.model';
 import { setRestaurantAverageScoreAndPrice } from '../utils';
 
-export const createUser = async (req: Request, res: Response) => {
+export const createUser = async (req: Request<any, any, CreateUserInputValidation['body']>, res: Response) => {
   const { email, firstName, lastName, password } = req.body;
 
-  const userByEmail = await User.find({ email });
+  const userByEmail = await User.findOne({ email });
 
   if (userByEmail) {
     return res.status(422).send({ message: `Duplicate email!` });
@@ -42,7 +42,10 @@ export const getUser = async (req: Request, res: Response) => {
   return res.send({ data });
 };
 
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser = async (
+  req: Request<{ id: string }, any, UpdateUserInputValidation['body']>,
+  res: Response
+) => {
   const { id } = req.params;
   const { firstName, lastName } = req.body;
 

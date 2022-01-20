@@ -37,7 +37,7 @@ const menuItemValidationSchema = yup.object({
 const menuGroupValidationSchema = yup.object({
   title: yup.string().required(),
   description: yup.string(),
-  items: yup.array(menuItemValidationSchema),
+  items: yup.array(menuItemValidationSchema.required()),
   pinned: yup.boolean()
 });
 
@@ -45,14 +45,21 @@ export const restaurantInputValidation = yup.object({
   body: yup.object({
     name: yup.string().required(),
     paymentTypes: yup
-      .array(yup.string().oneOf([...paymentTypes]))
+      .array(
+        yup
+          .string()
+          .oneOf([...paymentTypes])
+          .required()
+      )
       .required()
-      .min(1), // TODO: extend yup to validate for uniqueness
-    pictures: yup.array(yup.string().url()),
+      .min(1), // TODO: extend yup to validate uniqueness
+    pictures: yup.array(yup.string().url().required()),
     menuGroups: yup.array(menuGroupValidationSchema),
-    tags: yup.array(yup.string()).required().min(1) // TODO: extend yup to validate for uniqueness
+    tags: yup.array(yup.string().required()).required().min(1) // TODO: extend yup to validate uniqueness
   })
 });
+
+export type RestaurantInputValidation = yup.InferType<typeof restaurantInputValidation>;
 
 const MenuGroupItemSchema = new Schema<MenuGroupItem>(
   {

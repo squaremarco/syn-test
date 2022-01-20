@@ -9,23 +9,27 @@ export type ReviewDocument = Document & {
   price?: number;
 };
 
+const commonInputValidation = {
+  content: yup.string().required(),
+  score: yup.number().min(0).max(10).required(),
+  price: yup.number().min(0)
+};
+
 export const createReviewInputValidation = yup.object({
   body: yup.object({
+    ...commonInputValidation,
     userId: yup.string().required(),
-    restaurantId: yup.string().required(),
-    content: yup.string().required(),
-    score: yup.number().min(0).max(10).required(),
-    price: yup.number().min(0)
+    restaurantId: yup.string().required()
   })
 });
 
+export type CreateReviewInputValidation = yup.InferType<typeof createReviewInputValidation>;
+
 export const updateReviewInputValidation = yup.object({
-  body: yup.object({
-    content: yup.string().required(),
-    score: yup.number().min(0).max(10).required(),
-    price: yup.number().min(0)
-  })
+  body: yup.object(commonInputValidation)
 });
+
+export type UpdateReviewInputValidation = yup.InferType<typeof updateReviewInputValidation>;
 
 const reviewsSchema = new Schema<ReviewDocument>(
   {

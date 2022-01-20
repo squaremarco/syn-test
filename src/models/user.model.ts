@@ -10,21 +10,26 @@ export type UserDocument = Document & {
   reviews: string[];
 };
 
+const commonUserInputValidation = {
+  firstName: yup.string().required(),
+  lastName: yup.string().required()
+};
+
 export const createUserInputValidation = yup.object({
   body: yup.object({
+    ...commonUserInputValidation,
     email: yup.string().email().required(),
-    firstName: yup.string().required(),
-    lastName: yup.string().required(),
     password: yup.string().required()
   })
 });
 
+export type CreateUserInputValidation = yup.InferType<typeof createUserInputValidation>;
+
 export const updateUserInputValidation = yup.object({
-  body: yup.object({
-    firstName: yup.string().required(),
-    lastName: yup.string().required()
-  })
+  body: yup.object(commonUserInputValidation)
 });
+
+export type UpdateUserInputValidation = yup.InferType<typeof updateUserInputValidation>;
 
 const usersSchema = new Schema<UserDocument>(
   {
