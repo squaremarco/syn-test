@@ -1,3 +1,5 @@
+import './yupExtension';
+
 import express from 'express';
 
 import * as config from './config';

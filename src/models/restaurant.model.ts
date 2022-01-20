@@ -52,10 +52,15 @@ export const restaurantInputValidation = yup.object({
           .required()
       )
       .required()
-      .min(1), // TODO: extend yup to validate uniqueness
+      .min(1)
+      .distinct(s => s.toLowerCase()),
     pictures: yup.array(yup.string().url().required()),
     menuGroups: yup.array(menuGroupValidationSchema),
-    tags: yup.array(yup.string().required()).required().min(1) // TODO: extend yup to validate uniqueness
+    tags: yup
+      .array(yup.string().required())
+      .required()
+      .min(1)
+      .distinct(s => s.toLowerCase())
   })
 });
 
