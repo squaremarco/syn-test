@@ -1,4 +1,5 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
+import * as yup from 'yup';
 
 export type UserDocument = Document & {
   firstName: string;
@@ -9,12 +10,21 @@ export type UserDocument = Document & {
   reviews: string[];
 };
 
-export type UserInput = {
-  firstName: UserDocument['firstName'];
-  lastName: UserDocument['lastName'];
-  email: UserDocument['email'];
-  password: UserDocument['password'];
-};
+export const createUserInputValidation = yup.object({
+  body: yup.object({
+    email: yup.string().email().required(),
+    firstName: yup.string().required(),
+    lastName: yup.string().required(),
+    password: yup.string().required()
+  })
+});
+
+export const updateUserInputValidation = yup.object({
+  body: yup.object({
+    firstName: yup.string().required(),
+    lastName: yup.string().required()
+  })
+});
 
 const usersSchema = new Schema<UserDocument>(
   {

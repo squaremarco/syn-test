@@ -2,17 +2,19 @@ import { Request, Response } from 'express';
 
 import { Restaurant } from '../models/restaurant.model';
 import { Review } from '../models/review.model';
-import { User, UserInput } from '../models/user.model';
+import { User } from '../models/user.model';
 import { setRestaurantAverageScoreAndPrice } from '../utils';
 
 export const createUser = async (req: Request, res: Response) => {
   const { email, firstName, lastName, password } = req.body;
 
-  if (!email || !firstName || !lastName || !password) {
-    return res.status(422).send({ message: 'The fields firstName, lastName, email and password are required' });
+  const userByEmail = await User.find({ email });
+
+  if (userByEmail) {
+    return res.status(422).send({ message: `Duplicate email!` });
   }
 
-  const data = await User.create<UserInput>({
+  const data = await User.create({
     firstName,
     lastName,
     email,
@@ -48,10 +50,6 @@ export const updateUser = async (req: Request, res: Response) => {
 
   if (!user) {
     return res.status(404).send({ message: `User with id "${id}" not found.` });
-  }
-
-  if (!firstName || !lastName) {
-    return res.status(422).send({ message: 'The fields firstName and lastName are required' });
   }
 
   await User.findByIdAndUpdate(id, { firstName, lastName });

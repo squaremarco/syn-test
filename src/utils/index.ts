@@ -1,3 +1,6 @@
+import { NextFunction, Request, Response } from 'express';
+import { AnySchema, ValidationError } from 'yup';
+
 import { Restaurant } from '../models/restaurant.model';
 import { Review } from '../models/review.model';
 
@@ -23,4 +26,22 @@ export const setRestaurantAverageScoreAndPrice = async (id: string) => {
     averageScore: totalScore / countScore,
     averagePrice: totalPrice / countPrice
   });
+};
+
+export const yupValidateMiddleware = (schema: AnySchema) => async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await schema.validate({
+      body: req.body,
+      query: req.query,
+      params: req.params
+    });
+
+    return next();
+  } catch (err: any) {
+    if (ValidationError.isError(err)) {
+      return res.status(500).send({ type: err.name, message: err.message });
+    }
+
+    return res.status(500).send({ type: 'ExceptionalError', message: err.message });
+  }
 };
