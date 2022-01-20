@@ -1,4 +1,5 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
+import * as yup from 'yup';
 
 export type ReviewDocument = Document & {
   userId: string;
@@ -8,13 +9,23 @@ export type ReviewDocument = Document & {
   price?: number;
 };
 
-export type ReviewInput = {
-  userId: ReviewDocument['userId'];
-  restaurantId: ReviewDocument['restaurantId'];
-  content: ReviewDocument['content'];
-  score: ReviewDocument['score'];
-  price?: ReviewDocument['price'];
-};
+export const createReviewInputValidation = yup.object({
+  body: yup.object({
+    userId: yup.string().required(),
+    restaurantId: yup.string().required(),
+    content: yup.string().required(),
+    score: yup.number().min(0).max(10).required(),
+    price: yup.number().min(0)
+  })
+});
+
+export const updateReviewInputValidation = yup.object({
+  body: yup.object({
+    content: yup.string().required(),
+    score: yup.number().min(0).max(10).required(),
+    price: yup.number().min(0)
+  })
+});
 
 const reviewsSchema = new Schema<ReviewDocument>(
   {
@@ -32,7 +43,9 @@ const reviewsSchema = new Schema<ReviewDocument>(
     },
     score: {
       type: Schema.Types.Number,
-      required: true
+      required: true,
+      min: 0,
+      max: 10
     },
     price: {
       type: Schema.Types.Number

@@ -7,6 +7,15 @@ import { Review } from '../models/review.model';
 export const setRestaurantAverageScoreAndPrice = async (id: string) => {
   const reviewsByRestaurant = await Review.find({ restaurantId: id });
 
+  if (!reviewsByRestaurant.length) {
+    await Restaurant.findByIdAndUpdate(id, {
+      averageScore: 0,
+      averagePrice: 0
+    });
+
+    return;
+  }
+
   const { totalScore, countScore, totalPrice, countPrice } = reviewsByRestaurant.reduce(
     (acc, review) => ({
       totalScore: acc.totalScore + review.score,
@@ -24,7 +33,7 @@ export const setRestaurantAverageScoreAndPrice = async (id: string) => {
 
   await Restaurant.findByIdAndUpdate(id, {
     averageScore: totalScore / countScore,
-    averagePrice: totalPrice / countPrice
+    averagePrice: countPrice > 0 ? totalPrice / countPrice : 0
   });
 };
 

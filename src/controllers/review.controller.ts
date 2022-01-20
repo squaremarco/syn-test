@@ -1,16 +1,12 @@
 import { Request, Response } from 'express';
 
 import { Restaurant } from '../models/restaurant.model';
-import { Review, ReviewInput } from '../models/review.model';
+import { Review } from '../models/review.model';
 import { User } from '../models/user.model';
 import { setRestaurantAverageScoreAndPrice } from '../utils';
 
 export const createReview = async (req: Request, res: Response) => {
   const { userId, restaurantId, content, score, price } = req.body;
-
-  if (!userId || !restaurantId || !content || !score) {
-    return res.status(422).send({ message: 'The fields userId, restaurantId, content and score are required' });
-  }
 
   const user = await User.findById(userId);
   const restaurant = await Restaurant.findById(restaurantId);
@@ -27,7 +23,7 @@ export const createReview = async (req: Request, res: Response) => {
     return res.status(422).send({ message: `Can't review a restaurant more than once. Update your review instead.` });
   }
 
-  const data = await Review.create<ReviewInput>({ content, score, price, userId, restaurantId });
+  const data = await Review.create({ content, score, price, userId, restaurantId });
 
   await User.findByIdAndUpdate(userId, { $push: { reviews: data.id } });
   await Restaurant.findByIdAndUpdate(restaurantId, { $push: { reviews: data.id } });
@@ -63,10 +59,6 @@ export const updateReview = async (req: Request, res: Response) => {
 
   if (!review) {
     return res.status(404).send({ message: `Review with id "${id}" not found.` });
-  }
-
-  if (!content || !score) {
-    return res.status(422).send({ message: 'The fields content and score are required' });
   }
 
   await Review.findByIdAndUpdate(id, { content, score, price: price ?? review.price });

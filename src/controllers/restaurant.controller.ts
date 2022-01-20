@@ -1,17 +1,13 @@
 import { Request, Response } from 'express';
 
-import { Restaurant, RestaurantInput } from '../models/restaurant.model';
+import { Restaurant } from '../models/restaurant.model';
 import { Review } from '../models/review.model';
 import { User } from '../models/user.model';
 
 export const createRestaurant = async (req: Request, res: Response) => {
   const { name, paymentTypes, pictures, menuGroups, tags } = req.body;
 
-  if (!name || !paymentTypes || !tags) {
-    return res.status(422).send({ message: 'The fields name, paymentTypes and tags are required' });
-  }
-
-  const data = await Restaurant.create<RestaurantInput>({ name, paymentTypes, pictures, menuGroups, tags });
+  const data = await Restaurant.create({ name, paymentTypes, pictures, menuGroups, tags });
 
   return res.send({ data });
 };
@@ -36,7 +32,7 @@ export const getRestaurant = async (req: Request, res: Response) => {
 
 export const updateRestaurant = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { name, paymentTypes, pictures, tags } = req.body;
+  const { name, paymentTypes, menuGroups, pictures, tags } = req.body;
 
   const restaurant = await Restaurant.findById(id);
 
@@ -44,11 +40,13 @@ export const updateRestaurant = async (req: Request, res: Response) => {
     return res.status(404).send({ message: `Restaurant with id "${id}" not found.` });
   }
 
-  if (!name || !paymentTypes || !tags) {
-    return res.status(422).send({ message: 'The fields name, paymentTypes and tags are required' });
-  }
-
-  await Restaurant.findByIdAndUpdate(id, { name, paymentTypes, pictures: pictures ?? restaurant.pictures, tags });
+  await Restaurant.findByIdAndUpdate(id, {
+    name,
+    paymentTypes,
+    menuGroups: menuGroups ?? restaurant.menuGroups,
+    pictures: pictures ?? restaurant.pictures,
+    tags
+  });
 
   const data = await Restaurant.findById(id);
 
