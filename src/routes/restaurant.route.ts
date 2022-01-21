@@ -9,15 +9,15 @@ import {
   likeRestaurant,
   updateRestaurant
 } from '../controllers/restaurant.controller';
-import { restaurantInputValidation } from '../models/restaurant.model';
+import { createRestaurantInputValidation, updateRestaurantInputValidation } from '../models/restaurant.model';
 import { yupValidateMiddleware } from '../utils';
 
 export const restaurantRoute = () =>
   Router()
-    .post('/restaurants', yupValidateMiddleware(restaurantInputValidation), createRestaurant)
+    .post('/restaurants', yupValidateMiddleware(createRestaurantInputValidation), createRestaurant)
     .get('/restaurants', getAllRestaurants)
     .get('/restaurants/:id', getRestaurant)
-    .patch('/restaurants/:id', yupValidateMiddleware(restaurantInputValidation), updateRestaurant)
+    .patch('/restaurants/:id', yupValidateMiddleware(updateRestaurantInputValidation), updateRestaurant)
     .delete('/restaurants/:id', deleteRestaurant)
     .patch('/restaurants/like/:id', likeRestaurant)
     .patch('/restaurants/dislike/:id', dislikeRestaurant);

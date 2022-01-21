@@ -52,10 +52,12 @@ const usersSchema = new Schema<UserDocument>(
     },
     likes: {
       type: [Schema.Types.String],
+      ref: 'Restaurant',
       default: []
     },
     reviews: {
       type: [Schema.Types.String],
+      ref: 'Review',
       default: []
     }
   },

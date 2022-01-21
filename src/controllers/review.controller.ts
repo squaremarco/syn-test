@@ -34,7 +34,7 @@ export const createReview = async (req: Request<any, any, CreateReviewInputValid
 };
 
 export const getAllReviews = async (_: Request, res: Response) => {
-  const data = await Review.find().sort('-updatedAt').exec();
+  const data = await Review.find().sort('-updatedAt').populate(['userId', 'restaurantId']).exec();
 
   return res.send({ data });
 };
@@ -42,7 +42,7 @@ export const getAllReviews = async (_: Request, res: Response) => {
 export const getReview = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const data = await Review.findById(id);
+  const data = await Review.findById(id).populate(['userId', 'restaurantId']);
 
   if (!data) {
     return res.status(404).send({ message: `Review with id "${id}" not found.` });

@@ -25,7 +25,7 @@ export const createUser = async (req: Request<any, any, CreateUserInputValidatio
 };
 
 export const getAllUsers = async (_: Request, res: Response) => {
-  const data = await User.find().sort('-updatedAt').exec();
+  const data = await User.find().sort('-updatedAt').populate(['likes', 'reviews']).exec();
 
   return res.send({ data });
 };
@@ -33,7 +33,7 @@ export const getAllUsers = async (_: Request, res: Response) => {
 export const getUser = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const data = await User.findById(id);
+  const data = await User.findById(id).populate(['likes', 'reviews']);
 
   if (!data) {
     return res.status(404).send({ message: `User with id "${id}" not found.` });

@@ -35,10 +35,12 @@ const reviewsSchema = new Schema<ReviewDocument>(
   {
     userId: {
       type: Schema.Types.String,
+      ref: 'User',
       required: true
     },
     restaurantId: {
       type: Schema.Types.String,
+      ref: 'Restaurant',
       required: true
     },
     content: {

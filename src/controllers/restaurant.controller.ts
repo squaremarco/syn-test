@@ -1,10 +1,17 @@
 import { Request, Response } from 'express';
 
-import { Restaurant, RestaurantInputValidation } from '../models/restaurant.model';
+import {
+  CreateRestaurantInputValidation,
+  Restaurant,
+  UpdateRestaurantInputValidation
+} from '../models/restaurant.model';
 import { Review } from '../models/review.model';
 import { User } from '../models/user.model';
 
-export const createRestaurant = async (req: Request<any, any, RestaurantInputValidation['body']>, res: Response) => {
+export const createRestaurant = async (
+  req: Request<any, any, CreateRestaurantInputValidation['body']>,
+  res: Response
+) => {
   const { name, paymentTypes, pictures, menuGroups, tags } = req.body;
 
   const data = await Restaurant.create({ name, paymentTypes, pictures, menuGroups, tags });
@@ -13,7 +20,7 @@ export const createRestaurant = async (req: Request<any, any, RestaurantInputVal
 };
 
 export const getAllRestaurants = async (_: Request, res: Response) => {
-  const data = await Restaurant.find().sort('-updatedAt').exec();
+  const data = await Restaurant.find().populate(['pinnedReview', 'reviews']).sort('-updatedAt').exec();
 
   return res.send({ data });
 };
@@ -21,7 +28,7 @@ export const getAllRestaurants = async (_: Request, res: Response) => {
 export const getRestaurant = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const data = await Restaurant.findById(id);
+  const data = await Restaurant.findById(id).populate(['pinnedReview', 'reviews']);
 
   if (!data) {
     return res.status(404).send({ message: `Place with id "${id}" not found.` });
@@ -31,11 +38,11 @@ export const getRestaurant = async (req: Request, res: Response) => {
 };
 
 export const updateRestaurant = async (
-  req: Request<{ id: string }, any, RestaurantInputValidation['body']>,
+  req: Request<{ id: string }, any, UpdateRestaurantInputValidation['body']>,
   res: Response
 ) => {
   const { id } = req.params;
-  const { name, paymentTypes, menuGroups, pictures, tags } = req.body;
+  const { name, paymentTypes, menuGroups, pinnedReview, pictures, tags } = req.body;
 
   const restaurant = await Restaurant.findById(id);
 
@@ -46,6 +53,7 @@ export const updateRestaurant = async (
   await Restaurant.findByIdAndUpdate(id, {
     name,
     paymentTypes,
+    pinnedReview,
     menuGroups: menuGroups ?? restaurant.menuGroups,
     pictures: pictures ?? restaurant.pictures,
     tags

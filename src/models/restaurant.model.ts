@@ -41,30 +41,38 @@ const menuGroupValidationSchema = yup.object({
   pinned: yup.boolean()
 });
 
-export const restaurantInputValidation = yup.object({
-  body: yup.object({
-    name: yup.string().required(),
-    paymentTypes: yup
-      .array(
-        yup
-          .string()
-          .oneOf([...paymentTypes])
-          .required()
-      )
-      .required()
-      .min(1)
-      .distinct(s => s.toLowerCase()),
-    pictures: yup.array(yup.string().url().required()),
-    menuGroups: yup.array(menuGroupValidationSchema),
-    tags: yup
-      .array(yup.string().required())
-      .required()
-      .min(1)
-      .distinct(s => s.toLowerCase())
-  })
+const commonRestaurantInputValidation = {
+  name: yup.string().required(),
+  paymentTypes: yup
+    .array(
+      yup
+        .string()
+        .oneOf([...paymentTypes])
+        .required()
+    )
+    .required()
+    .min(1)
+    .distinct(s => s.toLowerCase()),
+  pictures: yup.array(yup.string().url().required()),
+  menuGroups: yup.array(menuGroupValidationSchema),
+  tags: yup
+    .array(yup.string().required())
+    .required()
+    .min(1)
+    .distinct(s => s.toLowerCase())
+};
+
+export const createRestaurantInputValidation = yup.object({
+  body: yup.object(commonRestaurantInputValidation)
 });
 
-export type RestaurantInputValidation = yup.InferType<typeof restaurantInputValidation>;
+export type CreateRestaurantInputValidation = yup.InferType<typeof createRestaurantInputValidation>;
+
+export const updateRestaurantInputValidation = yup.object({
+  body: yup.object({ ...commonRestaurantInputValidation, pinnedReview: yup.string().nullable() })
+});
+
+export type UpdateRestaurantInputValidation = yup.InferType<typeof updateRestaurantInputValidation>;
 
 const MenuGroupItemSchema = new Schema<MenuGroupItem>(
   {
@@ -135,10 +143,12 @@ const restaurantSchema = new Schema<RestaurantDocument>(
     },
     pinnedReview: {
       type: Schema.Types.String,
+      ref: 'Review',
       default: null
     },
     reviews: {
       type: [Schema.Types.String],
+      ref: 'Review',
       default: []
     }
   },
