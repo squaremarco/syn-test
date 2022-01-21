@@ -42,7 +42,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "61e7ececdf506e5f8333db50"
+									"value": "61e9c15cfedca34a49475318"
 								}
 							]
 						}
@@ -56,7 +56,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"firstName\": \"Topolino\",\n    \"lastName\": \"Ratto\",\n    \"email\": \"topolino.ratto@test.dev\",\n    \"password\": \"5678\"\n}",
+							"raw": "{\n    \"firstName\": \"Bruno\",\n    \"lastName\": \"Power\",\n    \"email\": \"bruno.power32@test.dev\",\n    \"password\": \"9012\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -82,7 +82,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"firstName\": \"Pippo\",\n    \"lastName\": \"Cane\"\n}",
+							"raw": "{\n    \"firstName\": \"Bruno\",\n    \"lastName\": \"Power\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -101,7 +101,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "61e7e105a9b192e00d113eb4"
+									"value": "61e9c15cfedca34aa9475318"
 								}
 							]
 						}
@@ -179,13 +179,13 @@
 					"response": []
 				},
 				{
-					"name": "Create Reviews",
+					"name": "Create Review",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"userId\": \"61e82fb57596125a3d8e86d3\",\n    \"restaurantId\": \"61e82fa87596125a3d8e86d1\",\n    \"content\": \"Lorem ipsum dolor sit amet.\",\n    \"score\": \"9\",\n    \"price\": \"50\"\n}",
+							"raw": "{\n    \"userId\": \"61e9e5609c1fa8865bfe1563\",\n    \"restaurantId\": \"61ea7897b68fdfccda0fc287\",\n    \"content\": \"Lorem ipsum dolor sit amet.\",\n    \"score\": 9,\n    \"price\": 60\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -238,67 +238,6 @@
 					"response": []
 				},
 				{
-					"name": "Pin Review",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"restaurantId\": \"61e82fa87596125a3d8e86d1\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/reviews/pin/:id",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"reviews",
-								"pin",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": "61e82fc77596125a3d8e86d9"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Unpin Review",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"restaurantId\": \"61e82fa87596125a3d8e86d1\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/reviews/unpin",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"reviews",
-								"unpin"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Delete Review",
 					"request": {
 						"method": "DELETE",
@@ -315,7 +254,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "61e82a8e4728261873b7e044"
+									"value": "61e9d0b5d561afc49222d376"
 								}
 							]
 						}
@@ -375,7 +314,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Good Restaurant\",\n    \"paymentTypes\": [\n        \"card\"\n    ],\n    \"pictures\": [],\n    \"tags\": [\n        \"Italian\",\n        \"Modern\",\n        \"Affordable\"\n    ]\n}",
+							"raw": "{\n    \"name\": \"Good Restaurant\",\n    \"paymentTypes\": [\n        \"card\"\n    ],\n    \"pictures\": [],\n    \"tags\": [\n        \"Italian\",\n        \"Modern\",\n        \"Affordable\"\n    ],\n    \"menuGroups\": [\n        {\n            \"title\": \"Test Group\",\n            \"description\": \"Test Group Description\",\n            \"items\": [\n                {\n                    \"label\": \"Test Menu Item With Price\",\n                    \"price\": 25\n                },\n                {\n                    \"label\": \"Test Menu Item Without Price\"\n                }\n            ],\n            \"pinned\": true\n        },\n        {\n            \"title\": \"Test Group Without Items\",\n            \"description\": \"Test Group Description\"\n        },\n        {\n            \"title\": \"Test Group Without Items and Description\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -401,7 +340,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Good Restaurant\",\n    \"paymentTypes\": [\n        \"cash\",\n        \"voucher\"\n    ],\n    \"pictures\": [],\n    \"tags\": [\n        \"French\",\n        \"Old-Style\",\n        \"Pricey\"\n    ]\n}",
+							"raw": "{\n    \"name\": \"Good Restaurant\",\n    \"paymentTypes\": [\n        \"cash\",\n        \"voucher\"\n    ],\n    \"pictures\": [],\n    \"tags\": [\n        \"French\",\n        \"Old-Style\",\n        \"Pricey\"\n    ],\n    \"pinnedReview\": \"61ea78abb68fdfccda0fc28d\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -420,7 +359,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "61e81ee55c008117bbf545ab"
+									"value": "61ea7897b68fdfccda0fc287"
 								}
 							]
 						}
@@ -512,7 +451,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "61e8293c79c54bb18e3f073f"
+									"value": "61e9ddb241533d26956a197b"
 								}
 							]
 						}
