@@ -2,7 +2,6 @@
   "name": "@syn/test-nosql",
   "version": "0.0.1",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
   "scripts": {
     "dev": "docker-compose up --build",
     "dev:down": "docker-compose down",
@@ -27,6 +26,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.3.0",
+    "@types/express": "^4.17.13",
     "@types/jest": "^27.4.0",
     "@types/node": "^16.11.21",
     "@types/ramda": "^0.27.64",
