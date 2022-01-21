@@ -6,5 +6,6 @@ node_modules
 .nvmrc
 .prettierignore
 .prettierrc.js
+__tests__
 README.md
 mongo
