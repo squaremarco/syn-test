@@ -39,7 +39,7 @@ afterAll(async () => {
   await mongodb.closeDatabase();
 });
 
-const createPayload: Omit<CreateReviewInputValidation['body'], 'userId' | 'restaurantId'> = {
+const createPayload: Omit<CreateReviewInputValidation['body'], 'user' | 'restaurant'> = {
   content: 'Lorem Ipsum Dolor Sit Amet.',
   score: 8,
   price: 10
@@ -57,8 +57,8 @@ describe('Review controller', () => {
       .post('/reviews')
       .send({
         ...createPayload,
-        userId: createdUserId,
-        restaurantId: createdRestaurantId
+        user: createdUserId,
+        restaurant: createdRestaurantId
       });
 
     expect(response.statusCode).toBe(200);

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { isNil } from 'ramda';
 
 import { Restaurant } from '../models/restaurant.model';
 import { Review } from '../models/review.model';
@@ -10,7 +11,7 @@ export const createUser = async (req: Request<any, any, CreateUserInputValidatio
 
   const userByEmail = await User.findOne({ email });
 
-  if (userByEmail) {
+  if (!isNil(userByEmail)) {
     return res.status(422).send({ message: `Duplicate email!` });
   }
 
@@ -35,7 +36,7 @@ export const getUser = async (req: Request, res: Response) => {
 
   const data = await User.findById(id).populate(['likes', 'reviews']);
 
-  if (!data) {
+  if (isNil(data)) {
     return res.status(404).send({ message: `User with id "${id}" not found.` });
   }
 
@@ -51,7 +52,7 @@ export const updateUser = async (
 
   const user = await User.findById(id);
 
-  if (!user) {
+  if (isNil(user)) {
     return res.status(404).send({ message: `User with id "${id}" not found.` });
   }
 
@@ -67,10 +68,10 @@ export const deleteUser = async (req: Request, res: Response) => {
 
   await User.findByIdAndDelete(id);
 
-  const reviewsByUser = (await Review.find({ userId: id })).map(r => r.id as string);
+  const reviewsByUser = (await Review.find({ user: id })).map(r => r.id as string);
   const restaurantByReviews = (await Restaurant.find({ reviews: { $in: reviewsByUser } })).map(r => r.id as string);
 
-  await Review.deleteMany({ userId: id });
+  await Review.deleteMany({ user: id });
   await Restaurant.updateMany({ reviews: { $in: reviewsByUser } }, { $pullAll: { reviews: reviewsByUser } });
   await Promise.all(restaurantByReviews.map(setRestaurantAverageScoreAndPrice));
 

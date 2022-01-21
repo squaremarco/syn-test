@@ -43,3 +43,19 @@ To create the `rollup.js` bundle use the following npm script:
 ```shell
 npm run build
 ```
+
+## Test
+
+To run tests you will need a mongo database listening on port `27018`.
+
+```shell
+docker run -p 27018:27017 mongo:latest
+```
+
+Then you need to use the following npm script:
+
+```shell
+npm test
+```
+
+The environment variables used by the test suite are found in the `.env.test` file.

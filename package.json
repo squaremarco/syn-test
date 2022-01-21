@@ -16,12 +16,7 @@
     "kill-port": "kill-port 4000"
   },
   "dependencies": {
-    "@graphql-tools/schema": "^8.3.1",
-    "apollo-server-core": "^3.6.2",
-    "apollo-server-express": "^3.6.2",
-    "apollo-server-plugin-base": "^3.5.1",
     "express": "^4.17.2",
-    "graphql": "^16.2.0",
     "mongodb": "^4.3.1",
     "mongoose": "^6.1.7",
     "nanoid": "^3.2.0",

@@ -1,13 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
+import { isEmpty, reduce } from 'ramda';
 import { AnySchema, ValidationError } from 'yup';
 
 import { Restaurant } from '../models/restaurant.model';
 import { Review } from '../models/review.model';
 
 export const setRestaurantAverageScoreAndPrice = async (id: string) => {
-  const reviewsByRestaurant = await Review.find({ restaurantId: id });
+  const reviewsByRestaurant = await Review.find({ restaurant: id });
 
-  if (!reviewsByRestaurant.length) {
+  if (isEmpty(reviewsByRestaurant)) {
     await Restaurant.findByIdAndUpdate(id, {
       averageScore: 0,
       averagePrice: 0
@@ -16,7 +17,7 @@ export const setRestaurantAverageScoreAndPrice = async (id: string) => {
     return;
   }
 
-  const { totalScore, countScore, totalPrice, countPrice } = reviewsByRestaurant.reduce(
+  const { totalScore, countScore, totalPrice, countPrice } = reduce(
     (acc, review) => ({
       totalScore: acc.totalScore + review.score,
       countScore: acc.countScore + 1,
@@ -28,7 +29,8 @@ export const setRestaurantAverageScoreAndPrice = async (id: string) => {
       countScore: 0,
       totalPrice: 0,
       countPrice: 0
-    }
+    },
+    reviewsByRestaurant
   );
 
   await Restaurant.findByIdAndUpdate(id, {

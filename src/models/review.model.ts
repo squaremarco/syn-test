@@ -2,8 +2,8 @@ import mongoose, { Document, Model, Schema } from 'mongoose';
 import * as yup from 'yup';
 
 export type ReviewDocument = Document & {
-  userId: string;
-  restaurantId: string;
+  user: string;
+  restaurant: string;
   content: string;
   score: number;
   price?: number;
@@ -18,8 +18,8 @@ const commonInputValidation = {
 export const createReviewInputValidation = yup.object({
   body: yup.object({
     ...commonInputValidation,
-    userId: yup.string().required(),
-    restaurantId: yup.string().required()
+    user: yup.string().required(),
+    restaurant: yup.string().required()
   })
 });
 
@@ -33,12 +33,12 @@ export type UpdateReviewInputValidation = yup.InferType<typeof updateReviewInput
 
 const reviewsSchema = new Schema<ReviewDocument>(
   {
-    userId: {
+    user: {
       type: Schema.Types.String,
       ref: 'User',
       required: true
     },
-    restaurantId: {
+    restaurant: {
       type: Schema.Types.String,
       ref: 'Restaurant',
       required: true

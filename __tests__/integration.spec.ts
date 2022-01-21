@@ -37,8 +37,8 @@ beforeEach(async () => {
   createdRestaurantId = restaurantCreationResponse.body.data._id;
 
   const reviewCreationResponse = await request(app).post('/reviews').send({
-    userId: createdUserId,
-    restaurantId: createdRestaurantId,
+    user: createdUserId,
+    restaurant: createdRestaurantId,
     content: 'Lorem Ipsum Dolor Sit Amet.',
     score: 8,
     price: 10

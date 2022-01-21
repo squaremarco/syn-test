@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { any, isNil, map, pick } from 'ramda';
 
 import {
   CreateRestaurantInputValidation,
@@ -30,7 +31,7 @@ export const getRestaurant = async (req: Request, res: Response) => {
 
   const data = await Restaurant.findById(id).populate(['pinnedReview', 'reviews']);
 
-  if (!data) {
+  if (isNil(data)) {
     return res.status(404).send({ message: `Place with id "${id}" not found.` });
   }
 
@@ -46,7 +47,7 @@ export const updateRestaurant = async (
 
   const restaurant = await Restaurant.findById(id);
 
-  if (!restaurant) {
+  if (isNil(restaurant)) {
     return res.status(404).send({ message: `Restaurant with id "${id}" not found.` });
   }
 
@@ -69,13 +70,13 @@ export const deleteRestaurant = async (req: Request, res: Response) => {
 
   const restaurant = await Restaurant.findById(id);
 
-  if (!restaurant) {
+  if (isNil(restaurant)) {
     return res.status(404).send({ message: `Place with id "${id}" not found.` });
   }
 
   await Restaurant.findByIdAndDelete(id);
 
-  const reviewsByRestaurant = (await Review.find({ restaurantId: id })).map(r => r.id as string);
+  const reviewsByRestaurant = map(pick(['id']), await Review.find({ restaurant: id }));
 
   await Review.deleteMany({ id: { $in: reviewsByRestaurant } });
   await User.updateMany({ reviews: { $in: reviewsByRestaurant } }, { $pullAll: { reviews: reviewsByRestaurant } });
@@ -91,13 +92,13 @@ export const likeRestaurant = async (req: Request, res: Response) => {
   const restaurant = await Restaurant.findById(id);
   const user = await User.findById(userId);
 
-  if (!restaurant || !user) {
+  if (any(isNil, [restaurant, user])) {
     return res.status(404).send({ message: `Restaurant with id "${id}" or User with id "${userId}" not found.` });
   }
 
   const userAlreadyLikes = await User.findOne({ _id: userId, likes: { $in: id } });
 
-  if (userAlreadyLikes) {
+  if (!isNil(userAlreadyLikes)) {
     return res.status(422).send({ message: `User with id "${userId}" already likes Restaurant with id "${id}".` });
   }
 
@@ -113,13 +114,13 @@ export const dislikeRestaurant = async (req: Request, res: Response) => {
   const restaurant = await Restaurant.findById(id);
   const user = await User.findById(userId);
 
-  if (!restaurant || !user) {
+  if (any(isNil, [restaurant, user])) {
     return res.status(404).send({ message: `Restaurant with id "${id}" or User with id "${userId}" not found.` });
   }
 
   const userDoesntLike = await User.findOne({ id: userId, likes: { $in: id } });
 
-  if (!userDoesntLike) {
+  if (isNil(userDoesntLike)) {
     return res.status(422).send({ message: `User with id "${userId}" doesn't like Restaurant with id "${id}".` });
   }
 
