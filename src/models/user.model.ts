@@ -1,7 +1,7 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
 import * as yup from 'yup';
 
-export type UserDocument = Document & {
+export type UserType = {
   firstName: string;
   lastName: string;
   email: string;
@@ -9,6 +9,8 @@ export type UserDocument = Document & {
   likes: string[];
   reviews: string[];
 };
+
+export type UserDocument = Document & UserType;
 
 const commonUserInputValidation = {
   firstName: yup.string().required(),

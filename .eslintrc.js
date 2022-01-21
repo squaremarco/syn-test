@@ -28,6 +28,7 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '_' }],
     '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/naming-convention': 'off',
     'no-return-await': 'warn',
     'require-await': 'warn',
     'no-useless-return': 'warn',
