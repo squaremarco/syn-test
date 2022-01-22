@@ -1,4 +1,4 @@
-import mongoose, { Document, Model, Schema } from 'mongoose';
+import mongoose, { Document, Model, ObjectId, Schema } from 'mongoose';
 import * as yup from 'yup';
 
 const paymentTypes = ['cash', 'card', 'voucher'] as const;
@@ -13,8 +13,8 @@ export type RestaurantDocument = Document & {
   menuGroups: MenuGroup[];
   pictures: string[];
   tags: string[];
-  pinnedReview: string | null;
-  reviews: string[];
+  pinnedReview: ObjectId | null;
+  reviews: ObjectId[];
 };
 
 export type MenuGroup = {
@@ -142,12 +142,12 @@ const restaurantSchema = new Schema<RestaurantDocument>(
       required: true
     },
     pinnedReview: {
-      type: Schema.Types.String,
+      type: Schema.Types.ObjectId,
       ref: 'Review',
       default: null
     },
     reviews: {
-      type: [Schema.Types.String],
+      type: [Schema.Types.ObjectId],
       ref: 'Review',
       default: []
     }

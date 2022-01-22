@@ -1,9 +1,9 @@
-import mongoose, { Document, Model, Schema } from 'mongoose';
+import mongoose, { Document, Model, ObjectId, Schema } from 'mongoose';
 import * as yup from 'yup';
 
 export type ReviewDocument = Document & {
-  user: string;
-  restaurant: string;
+  user: ObjectId;
+  restaurant: ObjectId;
   content: string;
   score: number;
   price?: number;
@@ -34,12 +34,12 @@ export type UpdateReviewInputValidation = yup.InferType<typeof updateReviewInput
 const reviewsSchema = new Schema<ReviewDocument>(
   {
     user: {
-      type: Schema.Types.String,
+      type: Schema.Types.ObjectId,
       ref: 'User',
       required: true
     },
     restaurant: {
-      type: Schema.Types.String,
+      type: Schema.Types.ObjectId,
       ref: 'Restaurant',
       required: true
     },
