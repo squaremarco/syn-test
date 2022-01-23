@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ceb7cf64-c095-43f9-b958-81d07c76c6d5",
+		"_postman_id": "c1ca6d16-5e66-4bb2-a903-77de4f3ce709",
 		"name": "Synesthesia-Test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -82,16 +82,6 @@
 				{
 					"name": "All Users",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{authorization}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -109,16 +99,6 @@
 				{
 					"name": "Get User",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{authorization}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
