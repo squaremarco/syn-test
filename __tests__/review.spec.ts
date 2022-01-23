@@ -1,4 +1,3 @@
-import { omit } from 'ramda';
 import request from 'supertest';
 
 import app from '../src/app';
@@ -10,19 +9,31 @@ let mongodb: Awaited<ReturnType<typeof mongooseConnection>>;
 let createdReviewId: string;
 let createdUserId: string;
 let createdRestaurantId: string;
+let accessToken: string;
 
 beforeAll(async () => {
   mongodb = await mongooseConnection();
 
-  const userCreationResponse = await request(app).post('/users').send({
-    firstName: 'first',
-    lastName: 'last',
-    email: 'email@test.dev',
+  const signupResponse = await request(app)
+    .post('/signup')
+    .send({
+      firstName: 'test',
+      lastName: 'user',
+      email: 'test.user@test.dev',
+      password: 'password',
+      roles: ['admin']
+    });
+
+  const signinResponse = await request(app).post('/signin').send({
+    email: 'test.user@test.dev',
     password: 'password'
   });
 
+  accessToken = `Bearer ${signinResponse.body.data.accessToken}`;
+
   const restaurantCreationResponse = await request(app)
     .post('/restaurants')
+    .set('Authorization', accessToken)
     .send({
       name: 'Restaurant',
       paymentTypes: ['card'],
@@ -31,7 +42,7 @@ beforeAll(async () => {
       menuGroups: []
     });
 
-  createdUserId = userCreationResponse.body.data._id;
+  createdUserId = signupResponse.body.data._id;
   createdRestaurantId = restaurantCreationResponse.body.data._id;
 });
 
@@ -39,22 +50,22 @@ afterAll(async () => {
   await mongodb.closeDatabase();
 });
 
-const createPayload: Omit<CreateReviewInputValidation['body'], 'user' | 'restaurant'> = {
+const createPayload: Omit<CreateReviewInputValidation['body'], 'restaurant'> = {
   content: 'Lorem Ipsum Dolor Sit Amet.',
   score: 8,
   price: 10
 };
 
-const updatePayload: UpdateReviewInputValidation['body'] = {
+const updatePayload: Partial<UpdateReviewInputValidation['body']> = {
   content: 'Lorem Ipsum Dolor Sit Amet.',
-  score: 6,
-  price: 5
+  score: 6
 };
 
 describe('Review controller', () => {
   it('Should create a review', async () => {
     const response = await request(app)
       .post('/reviews')
+      .set('Authorization', accessToken)
       .send({
         ...createPayload,
         user: createdUserId,
@@ -83,7 +94,10 @@ describe('Review controller', () => {
   });
 
   it('Should update a review by id', async () => {
-    const response = await request(app).patch(`/reviews/${createdReviewId}`).send(updatePayload);
+    const response = await request(app)
+      .patch(`/reviews/${createdReviewId}`)
+      .set('Authorization', accessToken)
+      .send(updatePayload);
 
     expect(response.statusCode).toBe(200);
 
@@ -93,22 +107,31 @@ describe('Review controller', () => {
     expect(response.body.data).toEqual(expect.objectContaining({ ...createPayload, ...updatePayload }));
   });
 
-  it('Should validate inputs during creation and update', async () => {
-    const createResponse = await request(app)
-      .post('/reviews')
-      .send(omit(['content'], createPayload));
+  it('Should prevent deleting another user review', async () => {
+    await request(app)
+      .post('/signup')
+      .send({
+        firstName: 'test',
+        lastName: 'delete',
+        email: 'test.delete@test.dev',
+        password: 'password',
+        roles: ['admin']
+      });
 
-    expect(createResponse.statusCode).toBe(500);
+    const signinResponse = await request(app).post('/signin').send({
+      email: 'test.delete@test.dev',
+      password: 'password'
+    });
 
-    const updateResponse = await request(app)
-      .patch(`/reviews/${createdReviewId}`)
-      .send(omit(['score'], updatePayload));
+    const token = `Bearer ${signinResponse.body.data.accessToken}`;
 
-    expect(updateResponse.statusCode).toBe(500);
+    const response = await request(app).delete(`/reviews/${createdReviewId}`).set('Authorization', token);
+
+    expect(response.statusCode).toBe(422);
   });
 
   it('Should delete a review by id', async () => {
-    const response = await request(app).delete(`/reviews/${createdReviewId}`);
+    const response = await request(app).delete(`/reviews/${createdReviewId}`).set('Authorization', accessToken);
 
     expect(response.statusCode).toBe(200);
 

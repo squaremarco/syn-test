@@ -8,6 +8,7 @@ let mongodb: Awaited<ReturnType<typeof mongooseConnection>>;
 let createdUserId: string;
 let createdRestaurantId: string;
 let createdReviewId: string;
+let accessToken: string;
 
 beforeAll(async () => {
   mongodb = await mongooseConnection();
@@ -16,15 +17,26 @@ beforeAll(async () => {
 beforeEach(async () => {
   await mongodb.clearDatabase();
 
-  const userCreationResponse = await request(app).post('/users').send({
-    firstName: 'first',
-    lastName: 'last',
-    email: 'email@test.dev',
+  const signupResponse = await request(app)
+    .post('/signup')
+    .send({
+      firstName: 'test',
+      lastName: 'user',
+      email: 'test.user@test.dev',
+      password: 'password',
+      roles: ['admin']
+    });
+
+  const signinResponse = await request(app).post('/signin').send({
+    email: 'test.user@test.dev',
     password: 'password'
   });
 
+  accessToken = `Bearer ${signinResponse.body.data.accessToken}`;
+
   const restaurantCreationResponse = await request(app)
     .post('/restaurants')
+    .set('Authorization', accessToken)
     .send({
       name: 'Restaurant',
       paymentTypes: ['card'],
@@ -33,10 +45,10 @@ beforeEach(async () => {
       menuGroups: []
     });
 
-  createdUserId = userCreationResponse.body.data._id;
+  createdUserId = signupResponse.body.data._id;
   createdRestaurantId = restaurantCreationResponse.body.data._id;
 
-  const reviewCreationResponse = await request(app).post('/reviews').send({
+  const reviewCreationResponse = await request(app).post('/reviews').set('Authorization', accessToken).send({
     user: createdUserId,
     restaurant: createdRestaurantId,
     content: 'Lorem Ipsum Dolor Sit Amet.',
@@ -53,7 +65,7 @@ afterAll(async () => {
 
 describe('Integration', () => {
   test('Deleting a user should delete its reviews and these reviews references', async () => {
-    await request(app).delete(`/users/${createdUserId}`);
+    await request(app).delete(`/users/${createdUserId}`).set('Authorization', accessToken);
 
     const getReviewsResponse = await request(app).get('/reviews');
 
@@ -67,7 +79,7 @@ describe('Integration', () => {
   });
 
   test('Deleting a review should delete all its references', async () => {
-    await request(app).delete(`/reviews/${createdReviewId}`);
+    await request(app).delete(`/reviews/${createdReviewId}`).set('Authorization', accessToken);
 
     const getUsersResponse = await request(app).get(`/users/${createdUserId}`);
 

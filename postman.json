@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "ceb7cf64-c095-43f9-b958-81d07c76c6d5",
-		"name": "Syn-Test",
+		"name": "Synesthesia-Test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -9,8 +9,89 @@
 			"name": "User",
 			"item": [
 				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Test\",\n    \"lastName\": \"User\",\n    \"email\": \"test.user@test.dev\",\n    \"password\": \"password\",\n    \"roles\": [\"admin\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Signin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const header = pm.response.headers.get(\"authorization\");",
+									"pm.globals.set(\"authorization\", header);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test.user@test.dev\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/signin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "All Users",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authorization}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -28,6 +109,16 @@
 				{
 					"name": "Get User",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authorization}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -42,34 +133,8 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "61e9c15cfedca34a49475318"
+									"value": "61ed352a947d89f0e0828074"
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create User",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"firstName\": \"Bruno\",\n    \"lastName\": \"Power\",\n    \"email\": \"bruno.power32@test.dev\",\n    \"password\": \"9012\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/users",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"users"
 							]
 						}
 					},
@@ -78,6 +143,16 @@
 				{
 					"name": "Update User",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authorization}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PATCH",
 						"header": [],
 						"body": {
@@ -101,7 +176,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "61e9c15cfedca34aa9475318"
+									"value": "61ed352a947d89f0e0828074"
 								}
 							]
 						}
@@ -111,6 +186,16 @@
 				{
 					"name": "Delete User",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authorization}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
@@ -171,7 +256,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "61e7ececdf506e5f8333db50"
+									"value": "61eda55f24caa0ccd832e6ec"
 								}
 							]
 						}
@@ -181,11 +266,21 @@
 				{
 					"name": "Create Review",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authorization}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"userId\": \"61e9e5609c1fa8865bfe1563\",\n    \"restaurantId\": \"61ea7897b68fdfccda0fc287\",\n    \"content\": \"Lorem ipsum dolor sit amet.\",\n    \"score\": 9,\n    \"price\": 60\n}",
+							"raw": "{\n    \"restaurant\": \"61eaee30f661135dc59b3d4a\",\n    \"content\": \"Lorem ipsum dolor sit amet.\",\n    \"score\": 9,\n    \"price\": 60\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -207,6 +302,16 @@
 				{
 					"name": "Update Review",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authorization}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PATCH",
 						"header": [],
 						"body": {
@@ -240,6 +345,16 @@
 				{
 					"name": "Delete Review",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authorization}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
@@ -300,7 +415,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "61e7ececdf506e5f8333db50"
+									"value": "61eaee30f661135dc59b3d4a"
 								}
 							]
 						}
@@ -310,6 +425,16 @@
 				{
 					"name": "Create Restaurant",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authorization}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -336,6 +461,16 @@
 				{
 					"name": "Update Restaurant",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authorization}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PATCH",
 						"header": [],
 						"body": {
@@ -369,17 +504,18 @@
 				{
 					"name": "Like Restaurant",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authorization}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PATCH",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"userId\": \"61e7e105a9b192e00d113eb4\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "{{baseUrl}}/restaurants/like/:id",
 							"host": [
@@ -393,7 +529,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "61e8293c79c54bb18e3f073f"
+									"value": "61eaee30f661135dc59b3d4a"
 								}
 							]
 						}
@@ -403,17 +539,18 @@
 				{
 					"name": "Dislike Restaurant",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authorization}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PATCH",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"userId\": \"61e7e105a9b192e00d113eb4\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "{{baseUrl}}/restaurants/dislike/:id",
 							"host": [
@@ -437,6 +574,16 @@
 				{
 					"name": "Delete Restaurant",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authorization}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {

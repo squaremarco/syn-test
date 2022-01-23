@@ -1,12 +1,13 @@
 import { Router } from 'express';
 
-import { createUser, deleteUser, getAllUsers, getUser, updateUser } from '../controllers/user.controller';
-import { createUserInputValidation, updateUserInputValidation } from '../models/user.model';
+import { deleteUser, getAllUsers, getUser, signin, signup, updateUser } from '../controllers/user.controller';
+import { signinInputValidation, signupInputValidation, updateUserInputValidation } from '../models/user.model';
 import { yupValidateMiddleware } from '../utils';
 
 export const userRoute = () =>
   Router()
-    .post('/users', yupValidateMiddleware(createUserInputValidation), createUser)
+    .post('/signup', yupValidateMiddleware(signupInputValidation), signup)
+    .post('/signin', yupValidateMiddleware(signinInputValidation), signin)
     .get('/users', getAllUsers)
     .get('/users/:id', getUser)
     .patch('/users/:id', yupValidateMiddleware(updateUserInputValidation), updateUser)

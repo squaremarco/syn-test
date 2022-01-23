@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
-import { ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 import { isEmpty, reduce } from 'ramda';
 import { AnySchema, ValidationError } from 'yup';
 
 import { Restaurant } from '../models/restaurant.model';
 import { Review } from '../models/review.model';
 
-export const setRestaurantAverageScoreAndPrice = async (id: ObjectId | string) => {
+export const setRestaurantAverageScoreAndPrice = async (id: Types.ObjectId | string) => {
   const reviewsByRestaurant = await Review.find({ restaurant: id });
 
   if (isEmpty(reviewsByRestaurant)) {

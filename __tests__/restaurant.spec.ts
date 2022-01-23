@@ -6,10 +6,30 @@ import { mongooseConnection } from './common';
 
 let mongodb: Awaited<ReturnType<typeof mongooseConnection>>;
 
+let createdUserId: string;
 let createdRestaurantId: string;
+let accessToken: string;
 
 beforeAll(async () => {
   mongodb = await mongooseConnection();
+
+  const signupResponse = await request(app)
+    .post('/signup')
+    .send({
+      firstName: 'test',
+      lastName: 'user',
+      email: 'test.user@test.dev',
+      password: 'password',
+      roles: ['admin']
+    });
+
+  const signinResponse = await request(app).post('/signin').send({
+    email: 'test.user@test.dev',
+    password: 'password'
+  });
+
+  createdUserId = signupResponse.body.data._id;
+  accessToken = `Bearer ${signinResponse.body.data.accessToken}`;
 });
 
 afterAll(async () => {
@@ -24,8 +44,7 @@ const createPayload: CreateRestaurantInputValidation['body'] = {
   menuGroups: []
 };
 
-const updatePayload: UpdateRestaurantInputValidation['body'] = {
-  name: 'Restaurant',
+const updatePayload: Partial<UpdateRestaurantInputValidation['body']> = {
   paymentTypes: ['card', 'voucher'],
   pictures: ['https://via.placeholder.com/150'],
   tags: ['Tag', 'Second Tag'],
@@ -36,13 +55,12 @@ const updatePayload: UpdateRestaurantInputValidation['body'] = {
       description: 'Test Menu Description',
       pinned: true
     }
-  ],
-  pinnedReview: null
+  ]
 };
 
 describe('Restaurant controller', () => {
   it('Should create a restaurant', async () => {
-    const response = await request(app).post('/restaurants').send(createPayload);
+    const response = await request(app).post('/restaurants').set('Authorization', accessToken).send(createPayload);
 
     expect(response.statusCode).toBe(200);
     expect(response.body.data).toEqual(expect.objectContaining(createPayload));
@@ -66,7 +84,10 @@ describe('Restaurant controller', () => {
   });
 
   it('Should update a restaurant by id', async () => {
-    const response = await request(app).patch(`/restaurants/${createdRestaurantId}`).send(updatePayload);
+    const response = await request(app)
+      .patch(`/restaurants/${createdRestaurantId}`)
+      .set('Authorization', accessToken)
+      .send(updatePayload);
 
     expect(response.statusCode).toBe(200);
 
@@ -76,8 +97,32 @@ describe('Restaurant controller', () => {
     expect(response.body.data).toEqual(expect.objectContaining(updatePayload));
   });
 
+  it('Should like a restaurant by id', async () => {
+    const response = await request(app)
+      .patch(`/restaurants/like/${createdRestaurantId}`)
+      .set('Authorization', accessToken);
+
+    expect(response.statusCode).toBe(200);
+
+    const getResponse = await request(app).get(`/users/${createdUserId}`);
+
+    expect(getResponse.body.data.likes).toHaveLength(1);
+  });
+
+  it('Should dislike a restaurant by id', async () => {
+    const response = await request(app)
+      .patch(`/restaurants/dislike/${createdRestaurantId}`)
+      .set('Authorization', accessToken);
+
+    expect(response.statusCode).toBe(200);
+
+    const getResponse = await request(app).get(`/users/${createdUserId}`);
+
+    expect(getResponse.body.data.likes).toHaveLength(0);
+  });
+
   it('Should delete a restaurant by id', async () => {
-    const response = await request(app).delete(`/restaurants/${createdRestaurantId}`);
+    const response = await request(app).delete(`/restaurants/${createdRestaurantId}`).set('Authorization', accessToken);
 
     expect(response.statusCode).toBe(200);
 

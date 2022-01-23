@@ -1,4 +1,4 @@
-# Syn-Test - README
+# Synesthesia-Test - README
 
 ## Development
 
@@ -59,3 +59,8 @@ npm test
 ```
 
 The environment variables used by the test suite are found in the `.env.test` file.
+
+## Postman collection
+
+You can import the postman collection from the `postman.json` file.
+**NOTE**: since the application uses JWT authentication you have to first create an user with the `User/Signup` request and then generate a token with the `User/Signin` request. If, for some reason, postman doesn't persist the token correctly, you'll have to input it by hand in the authorization tab for each request.

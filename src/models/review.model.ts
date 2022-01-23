@@ -1,15 +1,17 @@
-import mongoose, { Document, Model, ObjectId, Schema } from 'mongoose';
+import mongoose, { Document, Model, Schema, Types } from 'mongoose';
 import * as yup from 'yup';
 
-export type ReviewDocument = Document & {
-  user: ObjectId;
-  restaurant: ObjectId;
+export type ReviewType = {
+  user: Types.ObjectId;
+  restaurant: Types.ObjectId;
   content: string;
   score: number;
   price?: number;
 };
 
-const commonInputValidation = {
+export type ReviewDocument = Document & ReviewType;
+
+const baseInputValidation = {
   content: yup.string().required(),
   score: yup.number().min(0).max(10).required(),
   price: yup.number().min(0)
@@ -17,8 +19,9 @@ const commonInputValidation = {
 
 export const createReviewInputValidation = yup.object({
   body: yup.object({
-    ...commonInputValidation,
-    user: yup.string().required(),
+    content: baseInputValidation.content.required(),
+    score: baseInputValidation.score.required(),
+    price: baseInputValidation.price,
     restaurant: yup.string().required()
   })
 });
@@ -26,7 +29,7 @@ export const createReviewInputValidation = yup.object({
 export type CreateReviewInputValidation = yup.InferType<typeof createReviewInputValidation>;
 
 export const updateReviewInputValidation = yup.object({
-  body: yup.object(commonInputValidation)
+  body: yup.object(baseInputValidation)
 });
 
 export type UpdateReviewInputValidation = yup.InferType<typeof updateReviewInputValidation>;

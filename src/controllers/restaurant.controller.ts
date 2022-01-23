@@ -21,7 +21,11 @@ export const createRestaurant = async (
 };
 
 export const getAllRestaurants = async (_: Request, res: Response) => {
-  const data = await Restaurant.find().populate(['pinnedReview', 'reviews']).sort('-updatedAt').exec();
+  const data = await Restaurant.find()
+    .populate({ path: 'pinnedReview', populate: { path: 'user' } })
+    .populate({ path: 'reviews', populate: { path: 'user' } })
+    .sort('-updatedAt')
+    .exec();
 
   return res.send({ data });
 };
@@ -29,7 +33,9 @@ export const getAllRestaurants = async (_: Request, res: Response) => {
 export const getRestaurant = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const data = await Restaurant.findById(id).populate(['pinnedReview', 'reviews']);
+  const data = await Restaurant.findById(id)
+    .populate({ path: 'pinnedReview', populate: { path: 'user' } })
+    .populate({ path: 'reviews', populate: { path: 'user' } });
 
   if (isNil(data)) {
     return res.status(404).send({ message: `Place with id "${id}" not found.` });
@@ -52,12 +58,12 @@ export const updateRestaurant = async (
   }
 
   await Restaurant.findByIdAndUpdate(id, {
-    name,
-    paymentTypes,
-    pinnedReview,
+    name: name ?? restaurant.name,
+    paymentTypes: paymentTypes ?? restaurant.paymentTypes,
+    pinnedReview: pinnedReview ?? restaurant.pinnedReview,
     menuGroups: menuGroups ?? restaurant.menuGroups,
     pictures: pictures ?? restaurant.pictures,
-    tags
+    tags: tags ?? restaurant.tags
   });
 
   const data = await Restaurant.findById(id);
@@ -87,7 +93,7 @@ export const deleteRestaurant = async (req: Request, res: Response) => {
 
 export const likeRestaurant = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { userId } = req.body;
+  const { id: userId } = req.scopedInfo!;
 
   const restaurant = await Restaurant.findById(id);
   const user = await User.findById(userId);
@@ -109,7 +115,7 @@ export const likeRestaurant = async (req: Request, res: Response) => {
 
 export const dislikeRestaurant = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { userId } = req.body;
+  const { id: userId } = req.scopedInfo!;
 
   const restaurant = await Restaurant.findById(id);
   const user = await User.findById(userId);

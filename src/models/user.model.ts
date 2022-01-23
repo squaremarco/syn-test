@@ -1,34 +1,60 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
 import * as yup from 'yup';
 
+const roles = ['admin', 'user'] as const;
+
+export type RolesType = typeof roles[number];
+
 export type UserType = {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
+  roles: RolesType[];
   likes: string[];
   reviews: string[];
 };
 
 export type UserDocument = Document & UserType;
 
-const commonUserInputValidation = {
-  firstName: yup.string().required(),
-  lastName: yup.string().required()
+const baseUserInputValidation = {
+  firstName: yup.string(),
+  lastName: yup.string(),
+  roles: yup
+    .array(
+      yup
+        .string()
+        .oneOf([...roles])
+        .required()
+    )
+    .min(1)
+    .distinct(s => s.toLowerCase()),
+  password: yup.string()
 };
 
-export const createUserInputValidation = yup.object({
+export const signupInputValidation = yup.object({
   body: yup.object({
-    ...commonUserInputValidation,
-    email: yup.string().email().required(),
-    password: yup.string().required()
+    firstName: baseUserInputValidation.firstName.required(),
+    lastName: baseUserInputValidation.lastName.required(),
+    roles: baseUserInputValidation.roles.required(),
+    password: baseUserInputValidation.password.required(),
+    email: yup.string().email().required()
   })
 });
 
-export type CreateUserInputValidation = yup.InferType<typeof createUserInputValidation>;
+export type SignupInputValidation = yup.InferType<typeof signupInputValidation>;
+
+export const signinInputValidation = yup.object({
+  body: yup.object({
+    email: yup.string().email().required(),
+    password: baseUserInputValidation.password.required()
+  })
+});
+
+export type SigninInputValidation = yup.InferType<typeof signinInputValidation>;
 
 export const updateUserInputValidation = yup.object({
-  body: yup.object(commonUserInputValidation)
+  body: yup.object(baseUserInputValidation)
 });
 
 export type UpdateUserInputValidation = yup.InferType<typeof updateUserInputValidation>;
@@ -50,6 +76,11 @@ const usersSchema = new Schema<UserDocument>(
     },
     password: {
       type: Schema.Types.String,
+      required: true
+    },
+    roles: {
+      type: [Schema.Types.String],
+      enum: roles,
       required: true
     },
     likes: {

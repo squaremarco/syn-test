@@ -1,11 +1,11 @@
-import mongoose, { Document, Model, ObjectId, Schema } from 'mongoose';
+import mongoose, { Document, Model, Schema, Types } from 'mongoose';
 import * as yup from 'yup';
 
 const paymentTypes = ['cash', 'card', 'voucher'] as const;
 
 export type PaymentType = typeof paymentTypes[number];
 
-export type RestaurantDocument = Document & {
+export type RestaurantType = {
   name: string;
   averageScore: number;
   averagePrice: number;
@@ -13,9 +13,11 @@ export type RestaurantDocument = Document & {
   menuGroups: MenuGroup[];
   pictures: string[];
   tags: string[];
-  pinnedReview: ObjectId | null;
-  reviews: ObjectId[];
+  pinnedReview: Types.ObjectId | null;
+  reviews: Types.ObjectId[];
 };
+
+export type RestaurantDocument = Document & RestaurantType;
 
 export type MenuGroup = {
   title: string;
@@ -42,7 +44,7 @@ const menuGroupValidationSchema = yup.object({
 });
 
 const commonRestaurantInputValidation = {
-  name: yup.string().required(),
+  name: yup.string(),
   paymentTypes: yup
     .array(
       yup
@@ -50,20 +52,24 @@ const commonRestaurantInputValidation = {
         .oneOf([...paymentTypes])
         .required()
     )
-    .required()
     .min(1)
     .distinct(s => s.toLowerCase()),
   pictures: yup.array(yup.string().url().required()),
   menuGroups: yup.array(menuGroupValidationSchema),
   tags: yup
     .array(yup.string().required())
-    .required()
     .min(1)
     .distinct(s => s.toLowerCase())
 };
 
 export const createRestaurantInputValidation = yup.object({
-  body: yup.object(commonRestaurantInputValidation)
+  body: yup.object({
+    name: commonRestaurantInputValidation.name.required(),
+    paymentTypes: commonRestaurantInputValidation.paymentTypes.required(),
+    pictures: commonRestaurantInputValidation.pictures,
+    menuGroups: commonRestaurantInputValidation.menuGroups,
+    tags: commonRestaurantInputValidation.tags.required()
+  })
 });
 
 export type CreateRestaurantInputValidation = yup.InferType<typeof createRestaurantInputValidation>;
@@ -146,11 +152,12 @@ const restaurantSchema = new Schema<RestaurantDocument>(
       ref: 'Review',
       default: null
     },
-    reviews: {
-      type: [Schema.Types.ObjectId],
-      ref: 'Review',
-      default: []
-    }
+    reviews: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Review'
+      }
+    ]
   },
   {
     collection: 'restaurants',
