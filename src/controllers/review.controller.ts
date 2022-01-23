@@ -36,8 +36,7 @@ export const getAllReviews = async (_: Request, res: Response) => {
   const data = await Review.find()
     .sort('-updatedAt')
     .populate({ path: 'user', select: '-password' })
-    .populate('restaurant')
-    .exec();
+    .populate('restaurant');
 
   return res.send({ data });
 };

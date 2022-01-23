@@ -24,8 +24,7 @@ export const getAllRestaurants = async (_: Request, res: Response) => {
   const data = await Restaurant.find()
     .populate({ path: 'pinnedReview', populate: { path: 'user' } })
     .populate({ path: 'reviews', populate: { path: 'user' } })
-    .sort('-updatedAt')
-    .exec();
+    .sort('-updatedAt');
 
   return res.send({ data });
 };

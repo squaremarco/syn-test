@@ -6,6 +6,7 @@ import express, { Request } from 'express';
 import jwt from 'express-jwt';
 
 import * as config from './config';
+import { errorHandler } from './middlewares';
 import { restaurantRoute } from './routes/restaurant.route';
 import { reviewRoute } from './routes/review.route';
 import { userRoute } from './routes/user.route';
@@ -42,7 +43,8 @@ app.use(
 app.use('/', restaurantRoute());
 app.use('/', reviewRoute());
 app.use('/', userRoute());
-
 app.get('/', (_, res) => res.send({ message: 'Hello, Synesthesia!' }));
+
+app.use(errorHandler);
 
 export default app;
