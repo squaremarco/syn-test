@@ -9,8 +9,8 @@ import {
   likeRestaurant,
   updateRestaurant
 } from '../controllers/restaurant.controller';
+import { yupValidateMiddleware } from '../middlewares';
 import { createRestaurantInputValidation, updateRestaurantInputValidation } from '../models/restaurant.model';
-import { yupValidateMiddleware } from '../utils';
 
 export const restaurantRoute = () =>
   Router()

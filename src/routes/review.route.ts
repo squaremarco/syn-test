@@ -9,8 +9,8 @@ import {
   unpinReview,
   updateReview
 } from '../controllers/review.controller';
+import { yupValidateMiddleware } from '../middlewares';
 import { createReviewInputValidation, updateReviewInputValidation } from '../models/review.model';
-import { yupValidateMiddleware } from '../utils';
 
 export const reviewRoute = () =>
   Router()

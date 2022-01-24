@@ -1,7 +1,5 @@
-import { NextFunction, Request, Response } from 'express';
 import { Types } from 'mongoose';
 import { isEmpty, reduce } from 'ramda';
-import { AnySchema, ValidationError } from 'yup';
 
 import { Restaurant } from '../models/restaurant.model';
 import { Review } from '../models/review.model';
@@ -38,22 +36,4 @@ export const setRestaurantAverageScoreAndPrice = async (id: Types.ObjectId | str
     averageScore: totalScore / countScore,
     averagePrice: countPrice > 0 ? totalPrice / countPrice : 0
   });
-};
-
-export const yupValidateMiddleware = (schema: AnySchema) => async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    await schema.validate({
-      body: req.body,
-      query: req.query,
-      params: req.params
-    });
-
-    return next();
-  } catch (err: any) {
-    if (ValidationError.isError(err)) {
-      return res.status(500).send({ type: err.name, message: err.message });
-    }
-
-    return res.status(500).send({ type: 'ExceptionalError', message: err.message });
-  }
 };
