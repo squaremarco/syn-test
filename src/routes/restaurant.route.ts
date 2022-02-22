@@ -9,15 +9,23 @@ import {
   likeRestaurant,
   updateRestaurant
 } from '../controllers/restaurant.controller';
-import { yupValidateMiddleware } from '../middlewares';
+import { rolesMiddleware, yupValidateMiddleware } from '../middlewares';
 import { createRestaurantInputValidation, updateRestaurantInputValidation } from '../models/restaurant.model';
 
 export const restaurantRoute = () =>
   Router()
-    .post('/restaurants', yupValidateMiddleware(createRestaurantInputValidation), createRestaurant)
+    .post(
+      '/restaurants',
+      [rolesMiddleware('admin'), yupValidateMiddleware(createRestaurantInputValidation)],
+      createRestaurant
+    )
     .get('/restaurants', getAllRestaurants)
     .get('/restaurants/:id', getRestaurant)
-    .patch('/restaurants/:id', yupValidateMiddleware(updateRestaurantInputValidation), updateRestaurant)
-    .delete('/restaurants/:id', deleteRestaurant)
+    .patch(
+      '/restaurants/:id',
+      [rolesMiddleware('admin'), yupValidateMiddleware(updateRestaurantInputValidation)],
+      updateRestaurant
+    )
+    .delete('/restaurants/:id', rolesMiddleware('admin'), deleteRestaurant)
     .patch('/restaurants/like/:id', likeRestaurant)
     .patch('/restaurants/dislike/:id', dislikeRestaurant);
